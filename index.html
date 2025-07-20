@@ -5,7 +5,7 @@
     <!-- some basic stuff  -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SVG with D3</title>
+    <title>Bezos vs Resto da galera</title>
 
     <!-- 
       add your stylesheet 
@@ -14,26 +14,87 @@
       WARNING: the order of the stylesheets matters
     -->
     <link rel="stylesheet" href="base.css">
-    <link rel="stylesheet" href="custom.css">
+    <link rel="stylesheet" href="custom.css"> 
 
     <!-- Step 2: add your d3 script below -->
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>  
+  
   </head>
+  
   <body>
-    <h1>CHART TITLE</h1>
-    <p>DESCRIPTION</p>
+    <h1>Bezos: tão rico e ainda assim, pão duro</h1>
+    <p>Bilhões na conta e gastou uma mixaria no casório</p>
     <div id="my-svg-chart"></div>
 
     <!-- your JS code that uses d3 to manipulate data -->
     <script>
+      
+      // Step 3
+      // define as variaveis que vamos usar
+      // valores estão em milhões
+      const casamentoBezos = 56, riquezaBezos = 236000;
+      // ele transforma a riqueza da galera pra riqueza Bezos e dps multiplica o custo pro mesmo nivel pra dar pra conseguir ver
+      const casamentoGalera = 7375, riquezaGalera = 236000;
 
-      // Step 3. add data variables
-      // Step 4. transform data into usable scales
-      // Step 5. create an SVG container inside #my-svg-chart using d3.select().append()
-      // Step 6. create SVG shapes binded with data, using d3.selectAll().data().join()
-      // Step 7. tweak the attributes of the SVG shapes to position them at the right places
-      // Step 8. color the SVG shapes using style attributes
+      // Step 4
+      // defino uma função usando a função scaleSqrt (tem a normal pra quadrados etc, essa é pra ajudar em circulos)
+      // domain: de quanto a quanto vou converter
+      // range: tamanho dos meus circulos - coloco a riqueza do Bezos pq é o maior valor 
+      const scaleRadius = d3.scaleSqrt().domain([0, riquezaBezos]).range([0, 100]);
 
+      // Step 5
+      // cria um objeto que é onde vai tá o svg
+      // tem sempre que ter altura/largura
+      const myChart = d3.select('#my-svg-chart')
+        .append('svg')
+        .attr('width', 640)
+        .attr('height', 640)        
+    
+
+      // Step 6
+      // junta tudo no circulo
+        const circles = myChart
+        .selectAll('circle')
+        .data([riquezaBezos, casamentoBezos, riquezaGalera, casamentoGalera])
+        .join('circle');  
+
+      // Step 7
+      // vamos começar dar atributos pros circulos
+
+      circles
+        // aqui o bagulho fica louco: cada circulo tem um "i" por ordem que foi adicionado, entao riquezaBezos = 1, casamentoBezos = 2, assim por diante
+        // entao aqui ele cria uma formula que fala q se os ids forem 2 ou mais (ou seja, quando tamo falando da galera) a posição x é outra
+        .attr('cx', function(d,i) {
+          if (i < 2) {return 100}
+          else {return 310}
+        })
+        // aqui ele fala q a posição y é 100 pra todo mundo
+        .attr('cy', 100)
+        // aqui ele fala q o raio dos circulos vai ser chamando a função scaleRadius lá de cima
+        .attr('r', (d) => scaleRadius(d))      
+        // aqui ele ta falando de novo dos indices dos dados 
+        // se for par, coloca azul, impar, cinza
+        .style('fill', function(d,i) {
+          return i%2 == 0 ? 'gray' : 'blue'
+        })
+
+      
+      // Step 8
+      // adicionando legenda (achei fraquinho mas segue o baile)
+
+      myChart.append('text')
+        .attr('x', 100)
+        .attr('y', 225)
+        .text('Bezos')
+        .style('text-anchor','middle')
+
+      myChart.append('text')
+        .attr('x', 310)
+        .attr('y', 225)
+        .text('Média americana')
+        .style('text-anchor','middle')
+      
+        
     </script>
 
   </body>

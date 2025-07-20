@@ -1,5 +1,18 @@
 
 /* add your custom css here */
+h1, p {
+    font-family: Verdana, sans-serif;
+}
+
+h1 {
+    color: gray;
+    font-size: xx-large;
+}
+
+p {
+    color: blue;
+    padding-top: 0;
+}
 
 #my-svg-chart, svg {
     display: block;
@@ -13,8 +26,7 @@
 }
 
 #my-svg-chart text {
-    /* display: none; */
-    font-family: sans-serif;    
+    font-family: Verdana, sans-serif;
 }
 
 #my-svg-chart .show text {
